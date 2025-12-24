@@ -19,24 +19,42 @@ class LicenseProvisionController extends Controller
         $this->service = $service;
     }
 
-    public function store(ProvisionLicenseRequest $request, Brand $brand): JsonResponse
-{
-    try {
-        $licenseKey = $this->service->provision(
-            $brand,
-            $request->customer_email,
-            $request->licenses
-        );
+//     public function store(ProvisionLicenseRequest $request, Brand $brand): JsonResponse
+// {
+//     try {
+//         $licenseKey = $this->service->provision(
+//             $brand,
+//             $request->customer_email,
+//             $request->licenses
+//         );
 
-        return response()->json(
-            new LicenseKeyResource(
-                $licenseKey->load('brand', 'licenses.product')
-            )
-        );
-    } catch (Throwable $e) {
-        return response()->json(new ErrorResource($e), $e->getCode() ?: 400);
-    }
+//         return response()->json(
+//             new LicenseKeyResource(
+//                 $licenseKey->load('brand', 'licenses.product')
+//             )
+//         );
+//     } catch (Throwable $e) {
+//         return response()->json(new ErrorResource($e), $e->getCode() ?: 400);
+//     }
+// }
+
+public function store(
+    ProvisionLicenseRequest $request,
+    Brand $brand
+): JsonResponse {
+    $licenseKey = $this->service->provision(
+        $brand,
+        $request->customer_email,
+        $request->licenses
+    );
+
+    return response()->json([
+        'data' => new LicenseKeyResource(
+            $licenseKey->load('brand', 'licenses.product')
+        )
+    ]);
 }
+
 
 
  // --- Update status ---

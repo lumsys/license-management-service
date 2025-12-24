@@ -26,5 +26,6 @@ class License extends Model
     {
         return $this->seat_limit - $this->activations()->count();
     }
+
 }
 

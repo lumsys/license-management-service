@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Activation;
 use App\Models\LicenseKey;
+use Log;
 
 class LicenseActivationService
 {
