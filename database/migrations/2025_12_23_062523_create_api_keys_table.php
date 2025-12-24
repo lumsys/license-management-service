@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->string('key')->unique();
+            $table->string('role')->default('internal'); 
+            $table->boolean('is_active')->default(true); 
             $table->timestamps();
         });
     }

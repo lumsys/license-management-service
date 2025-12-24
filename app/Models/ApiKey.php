@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class ApiKey extends Model
 {
-    protected $fillable = ['brand_id','key'];
-    public function brand() { return $this->belongsTo(Brand::class); }
+    protected $fillable = [
+        'key',
+        'brand_id',
+        'role',
+        'is_active',
+    ];
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 }

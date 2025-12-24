@@ -58,6 +58,12 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'licenses' => [
+        'driver' => 'single',
+        'path' => storage_path('logs/licenses.log'),
+        'level' => 'info',
+    ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
