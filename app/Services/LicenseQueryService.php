@@ -19,4 +19,18 @@ class LicenseQueryService
             ]),
         ];
     }
+
+     public function listByEmail(
+        string $email,
+        ?int $brandId = null
+    ): LengthAwarePaginator {
+        $query = LicenseKey::with(['licenses.product', 'brand'])
+            ->where('customer_email', $email);
+
+        if ($brandId !== null) {
+            $query->where('brand_id', $brandId);
+        }
+
+        return $query->paginate(10);
+    }
 }

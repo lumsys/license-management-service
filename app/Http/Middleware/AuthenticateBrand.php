@@ -4,26 +4,31 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Models\ApiKey;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateBrand
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    // public function handle(Request $request, Closure $next): Response
-    // {
-    //     return $next($request);
-    // }
-
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $key = ApiKey::where('key',$request->header('API-KEY'))->first();
-        if (!$key) abort(401,'Invalid API key');
+        $apiKey = $request->header('API-KEY');
+
+        if (!$apiKey) {
+            abort(401, 'API key missing');
+        }
+
+        $key = ApiKey::with('brand')
+            ->where('key', $apiKey)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$key) {
+            abort(401, 'Invalid API key');
+        }
+
+        $request->attributes->set('brand_id', $key->brand_id);
+        $request->attributes->set('role', $key->role); 
+
         return $next($request);
     }
 }

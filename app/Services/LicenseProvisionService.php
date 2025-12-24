@@ -7,48 +7,71 @@ use App\Models\License;
 use App\Models\LicenseKey;
 use App\Models\Product;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class LicenseProvisionService
 {
     public function provision(
-        Brand $brand,
-        string $customerEmail,
-        array $licenses
-    ): LicenseKey {
-        $licenseKey = LicenseKey::firstOrCreate(
-            [
-                'brand_id' => $brand->id,
-                'customer_email' => $customerEmail,
-            ],
-            [
-                'key' => (string) Str::uuid(),
-            ]
-        );
+    Brand $brand,
+    string $customerEmail,
+    array $licenses
+): LicenseKey {
+    $licenseKey = LicenseKey::firstOrCreate(
+        [
+            'brand_id' => $brand->id,
+            'customer_email' => $customerEmail,
+        ],
+        [
+            'key' => (string) Str::uuid(),
+        ]
+    );
 
-        foreach ($licenses as $licenseData) {
-            $product = Product::where('brand_id', $brand->id)
-                ->where('code', $licenseData['product_code'])
-                ->firstOrFail();
+    Log::channel('licenses')->info('License key provisioned', [
+        'brand_id' => $brand->id,
+        'customer_email' => $customerEmail,
+        'license_key_id' => $licenseKey->id,
+        'was_created' => $licenseKey->wasRecentlyCreated,
+    ]);
 
-            // Prevent duplicate licenses for the same product & customer
-            $existing = License::where('license_key_id', $licenseKey->id)
-                ->where('product_id', $product->id)
-                ->whereIn('status', ['valid', 'expired'])
-                ->first();
+    foreach ($licenses as $licenseData) {
+        $product = Product::where('brand_id', $brand->id)
+            ->where('code', $licenseData['product_code'])
+            ->firstOrFail();
 
-            if (!$existing) {
-                License::create([
-                    'license_key_id' => $licenseKey->id,
-                    'product_id' => $product->id,
-                    'status' => 'valid',
-                    'expires_at' => $licenseData['expires_at'],
-                    'seat_limit' => $licenseData['seat_limit'] ?? 1,
-                ]);
-            }
+        $existing = License::where('license_key_id', $licenseKey->id)
+            ->where('product_id', $product->id)
+            ->whereIn('status', ['valid', 'expired'])
+            ->first();
+
+        if ($existing) {
+           
+            Log::channel('licenses')->info('License skipped (already exists)', [
+                'license_key_id' => $licenseKey->id,
+                'product_code' => $product->code,
+                'license_id' => $existing->id,
+            ]);
+            continue;
         }
 
-        return $licenseKey;
+        $license = License::create([
+            'license_key_id' => $licenseKey->id,
+            'product_id' => $product->id,
+            'status' => 'valid',
+            'expires_at' => $licenseData['expires_at'],
+            'seat_limit' => $licenseData['seat_limit'] ?? 1,
+        ]);
+
+        Log::channel('licenses')->info('License created', [
+            'license_key_id' => $licenseKey->id,
+            'license_id' => $license->id,
+            'product_code' => $product->code,
+            'expires_at' => $license->expires_at,
+            'seat_limit' => $license->seat_limit,
+        ]);
     }
+
+    return $licenseKey;
+}
 
     public function updateStatus(License $license, string $status, ?string $newExpiryDate = null): License
     {
