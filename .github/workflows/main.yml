@@ -25,10 +25,8 @@ jobs:
           - 3306:3306
 
     steps:
-  
       - uses: actions/checkout@v3
 
-  
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -36,26 +34,34 @@ jobs:
           extensions: mbstring, bcmath, curl, pdo_mysql, json, tokenizer
           coverage: none
 
-   
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist
 
- 
-      - name: Copy .env and generate key
+      - name: Copy .env, generate key, and configure MySQL for testing
         run: |
           cp .env.example .env
           php artisan key:generate
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing_db" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=root" >> .env
 
-  
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h 127.0.0.1 -uroot -proot && break
+            sleep 1
+          done
+
       - name: Run migrations and seeders
         run: |
           php artisan migrate --env=testing --force
           php artisan db:seed --env=testing
 
-   
       - name: Run Laravel Pint
         run: vendor/bin/pint --test
-
 
       - name: Run PHPUnit tests
         run: php artisan test --env=testing --verbose
