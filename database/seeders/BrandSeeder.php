@@ -22,9 +22,12 @@ class BrandSeeder extends Seeder
         ]);
 
         ApiKey::create([
-            'brand_id' => $brand->id,
-            'key' => 'test-api-key',
-        ]);
+        'brand_id' => $brand->id,
+        'key' => 'test-api-key',
+        'role' => 'internal',
+        'is_active' => true,
+    ]);
+
 
         $product = Product::create([
             'brand_id' => $brand->id,
