@@ -54,6 +54,9 @@ The service provides:
 
   <img width="686" height="359" alt="Brand can change license lifecycle" src="https://github.com/user-attachments/assets/cd982fdc-f81f-4aff-8b2f-61f497e3bf73" />
 
+  <img width="694" height="423" alt="Brand can renew" src="https://github.com/user-attachments/assets/fb0bf414-0867-4856-b0d1-dca853ad3390" />
+
+
 
 ### **US3 – End-user product can activate a license**
 
