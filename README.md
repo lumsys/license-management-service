@@ -102,6 +102,6 @@ The service provides:
 | PATCH | `/licenses/{license}/status` | Update license status | API-Key |
 | PATCH | `/licenses/{license}/renew` | Renew license | API-Key |
 | GET | `/brands/licenses` | List licenses by email | API-Key |
-| POST | `/licenses/activate` | Activate a license for an instance | None (end-user) |
-| POST | `/licenses/deactivate` | Deactivate a license instance | None (end-user) |
-| GET | `/licenses/{key}` | Check license status | None (end-user) |
+| POST | `/licenses/activate` | Activate a license for an instance | API-Key |
+| POST | `/licenses/deactivate` | Deactivate a license instance | API-Key |
+| GET | `/licenses/{key}` | Check license status | API-Key |
