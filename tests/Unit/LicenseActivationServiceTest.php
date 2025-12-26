@@ -33,7 +33,7 @@ class LicenseActivationServiceTest extends TestCase
             'instance-2'
         );
 
-        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+       $this->expectException(\App\Exceptions\NoAvailableSeatsException::class);
 
         $this->service->activate(
             'TEST-LICENSE-KEY',

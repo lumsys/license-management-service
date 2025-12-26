@@ -1,0 +1,684 @@
+name: Licenses
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/brands/{brand_id}/licenses'
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Provision a license key for a customer'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      brand_id:
+        custom: []
+        name: brand_id
+        description: 'The ID of the brand.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      brand:
+        custom: []
+        name: brand
+        description: 'The brand ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      brand_id: 1
+      brand: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      customer_email:
+        custom: []
+        name: customer_email
+        description: 'Customer email address.'
+        required: true
+        example: customer@test.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      licenses:
+        custom: []
+        name: licenses
+        description: 'Array of licenses to provision.'
+        required: true
+        example:
+          -
+            product_code: ACME_PLUGIN
+            expires_at: '2026-12-26'
+            seat_limit: 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'licenses[].product_code':
+        custom: []
+        name: 'licenses[].product_code'
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'licenses[].expires_at':
+        custom: []
+        name: 'licenses[].expires_at'
+        description: 'Must be a valid date.'
+        required: true
+        example: '2025-12-26T12:31:24'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'licenses[].seat_limit':
+        custom: []
+        name: 'licenses[].seat_limit'
+        description: 'Must be at least 1.'
+        required: false
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      customer_email: customer@test.com
+      licenses:
+        -
+          product_code: ACME_PLUGIN
+          expires_at: '2026-12-26'
+          seat_limit: 3
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "license_key": "f8e730fd-3a83-4286-9bff-5b53d3f7c246",
+            "customer_email": "user@example.com",
+            "brand": {
+                "id": 1,
+                "name": "Acme Corp",
+                "slug": "acme"
+            },
+            "licenses": [
+                {
+                    "product": "Rank Math",
+                    "expires_at": "2026-12-31T00:00:00.000000Z",
+                    "seat_limit": 1,
+                    "remaining_seats": 0,
+                    "status": "valid",
+                    "is_valid": true
+                }
+            ],
+            "created_at": "2025-12-26T08:18:24.000000Z"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 400
+        content: |-
+          {
+            "error": "Error message",
+            "code": 400
+          }
+
+          POST /brands/{brand}/licenses
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/brands/licenses
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List licenses by customer email'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      email:
+        custom: []
+        name: email
+        description: 'Customer email to filter.'
+        required: true
+        example: user@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      email: user@example.com
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+                {
+                    "license_key": "f8e730fd-3a83-4286-9bff-5b53d3f7c246",
+                    "customer_email": "user@example.com",
+                    "brand": {
+                        "id": 1,
+                        "name": "Acme Corp",
+                        "slug": "acme"
+                    },
+                    "licenses": [
+                        {
+                            "product": "Rank Math",
+                            "expires_at": "2026-12-31T00:00:00.000000Z",
+                            "seat_limit": 1,
+                            "remaining_seats": 0,
+                            "status": "valid",
+                            "is_valid": true
+                        }
+                    ]
+                }
+            ]
+          }
+
+          GET /brands/licenses
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/v1/licenses/{license_id}/status'
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update license status'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      license_id:
+        custom: []
+        name: license_id
+        description: 'The ID of the license.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      license:
+        custom: []
+        name: license
+        description: 'The license ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      license_id: 1
+      license: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: 'New status for the license.'
+        required: true
+        example: valid
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      expires_at:
+        custom: []
+        name: expires_at
+        description: 'nullable New expiry date in Y-m-d format.'
+        required: false
+        example: '2026-12-31'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      status: valid
+      expires_at: '2026-12-31'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "status": "valid",
+            "expires_at": "2026-12-31"
+          }
+
+          PATCH /licenses/{license}/status
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/v1/licenses/{license_id}/renew'
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Renew a license'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      license_id:
+        custom: []
+        name: license_id
+        description: 'The ID of the license.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      license:
+        custom: []
+        name: license
+        description: 'The license ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      license_id: 1
+      license: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      months:
+        custom: []
+        name: months
+        description: 'Number of months to extend. Default: 12.'
+        required: false
+        example: 6
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      months: 6
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "status": "valid",
+            "expires_at": "2027-06-26"
+          }
+
+          PATCH /licenses/{license}/renew
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/licenses/activate
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Activate a license'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      license_key:
+        custom: []
+        name: license_key
+        description: 'The license key to activate.'
+        required: true
+        example: TEST-LICENSE-KEY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      product_code:
+        custom: []
+        name: product_code
+        description: 'The product code to activate.'
+        required: true
+        example: ACME_PLUGIN
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      instance_id:
+        custom: []
+        name: instance_id
+        description: 'Unique instance ID for activation.'
+        required: true
+        example: site-1
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      license_key: TEST-LICENSE-KEY
+      product_code: ACME_PLUGIN
+      instance_id: site-1
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "instance_id": "site-1",
+            "activated_at": "2025-12-26T08:00:00.000000Z"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 403
+        content: |-
+          {
+            "message": "No available seats"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 403
+        content: |-
+          {
+            "message": "License not valid"
+          }
+
+          POST /licenses/activate
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/licenses/deactivate
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Deactivate a license'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      license_key:
+        custom: []
+        name: license_key
+        description: 'The license key to deactivate.'
+        required: true
+        example: TEST-LICENSE-KEY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      product_code:
+        custom: []
+        name: product_code
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      instance_id:
+        custom: []
+        name: instance_id
+        description: 'Instance ID to deactivate.'
+        required: true
+        example: site-1
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      license_key: TEST-LICENSE-KEY
+      product_code: consequatur
+      instance_id: site-1
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "instance_id": "site-1",
+            "activated_at": "2025-12-26T08:00:00.000000Z"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "error": "Activation not found",
+            "code": 404
+          }
+
+          POST /licenses/deactivate
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/licenses/{key}'
+    metadata:
+      custom: []
+      groupName: Licenses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the status of a license'
+      description: ''
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      key:
+        custom: []
+        name: key
+        description: 'License key.'
+        required: true
+        example: TEST-LICENSE-KEY
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      key: TEST-LICENSE-KEY
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "license_key": "f8e730fd-3a83-4286-9bff-5b53d3f7c246",
+            "is_valid": true,
+            "entitlements": [
+                {
+                    "product": "Rank Math",
+                    "expires_at": "2026-12-31T00:00:00.000000Z",
+                    "seat_limit": 1,
+                    "remaining_seats": 1,
+                    "status": "valid",
+                    "is_valid": true
+                }
+            ]
+          }
+
+          GET /licenses/{key}
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+    controller: null
+    method: null
+    route: null

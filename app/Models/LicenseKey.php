@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class LicenseKey extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['brand_id', 'key', 'customer_email'];
 
     public function brand() { return $this->belongsTo(Brand::class); }

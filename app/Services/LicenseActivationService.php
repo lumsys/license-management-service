@@ -2,17 +2,23 @@
 
 namespace App\Services;
 
+
+use Exception;
 use App\Models\Activation;
 use App\Models\LicenseKey;
 use Log;
+use App\Exceptions\NoAvailableSeatsException;
+use App\Exceptions\LicenseNotValidException;
 
 class LicenseActivationService
 {
+
+    
     public function activate(
     string $licenseKeyValue,
     string $productCode,
     string $instanceId
-): void {
+): Activation {
     $licenseKey = LicenseKey::with('licenses.product', 'licenses.activations')
         ->where('key', $licenseKeyValue)
         ->firstOrFail();
@@ -24,12 +30,12 @@ class LicenseActivationService
         );
 
     if (!$license) {
-        abort(403, 'License not valid');
-    }
+            throw new LicenseNotValidException();
+        }
 
-    if ($license->remainingSeats() <= 0) {
-        abort(403, 'No available seats');
-    }
+        if ($license->remainingSeats() <= 0) {
+            throw new NoAvailableSeatsException();
+        }
 
     $activation = Activation::firstOrCreate(
         [
@@ -51,9 +57,11 @@ class LicenseActivationService
             'remaining_seats' => $license->remainingSeats(),
         ]);
     }
+
+    return $activation;
 }
 
-    public function deactivate(string $licenseKeyValue, string $instanceId): void
+    public function deactivate(string $licenseKeyValue, string $instanceId): ?Activation
 {
     $licenseKey = LicenseKey::with('licenses.activations')
         ->where('key', $licenseKeyValue)
@@ -74,6 +82,8 @@ class LicenseActivationService
         'license_id' => $activation->license_id,
         'instance_id' => $instanceId,
     ]);
+
+     return $activation;
 }
 
 }
