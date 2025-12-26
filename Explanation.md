@@ -366,6 +366,8 @@ php artisan test
 
 * You should see output like:
 
+<img width="658" height="317" alt="test" src="https://github.com/user-attachments/assets/6370f1e3-ea3e-4e51-be31-fd9f2d69cd2d" />
+
 
 sunda@Lumsys MINGW64 ~/Documents/License-App/centralized_License_Service (master)
 $ php artisan test
