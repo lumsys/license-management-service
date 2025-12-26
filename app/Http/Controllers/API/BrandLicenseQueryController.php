@@ -19,11 +19,38 @@ class BrandLicenseQueryController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * US6: List licenses by customer email
-     * - Brand scope: restricted to brand
-     * - Internal scope: cross-brand
-     */
+   /**
+ * List licenses by customer email
+ *
+ * @group Licenses
+ * @queryParam email string required Customer email to filter. Example: user@example.com
+ *
+ * @response 200 {
+ *   "data": [
+ *       {
+ *           "license_key": "f8e730fd-3a83-4286-9bff-5b53d3f7c246",
+ *           "customer_email": "user@example.com",
+ *           "brand": {
+ *               "id": 1,
+ *               "name": "Acme Corp",
+ *               "slug": "acme"
+ *           },
+ *           "licenses": [
+ *               {
+ *                   "product": "Rank Math",
+ *                   "expires_at": "2026-12-31T00:00:00.000000Z",
+ *                   "seat_limit": 1,
+ *                   "remaining_seats": 0,
+ *                   "status": "valid",
+ *                   "is_valid": true
+ *               }
+ *           ]
+ *       }
+ *   ]
+ * }
+ *
+ * GET /brands/licenses
+ */
     public function index(Request $request): JsonResponse
     {
         try {

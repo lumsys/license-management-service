@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('api_keys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
+             $table->foreignId('brand_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('key')->unique();
             $table->string('role')->default('internal'); 
             $table->boolean('is_active')->default(true); 

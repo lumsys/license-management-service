@@ -10,12 +10,11 @@ use App\Http\Controllers\API\{
 Route::middleware('brand.auth')->group(function () {
     Route::post('/brands/{brand}/licenses', [LicenseProvisionController::class, 'store']);
     Route::get('/brands/licenses', [BrandLicenseQueryController::class, 'index']);
-    Route::patch('/licenses/{license}/status', [LicenseController::class, 'updateStatus']);
-    Route::patch('/licenses/{license}/renew', [LicenseController::class, 'renew']);
+    Route::patch('/licenses/{license}/status', [LicenseProvisionController::class, 'updateStatus']);
+    Route::patch('/licenses/{license}/renew', [LicenseProvisionController::class, 'renew']);
 });
 
-Route::post('/licenses/activate', [LicenseActivationController::class, 'activate'])
-    ->name('licenses.activate');
+Route::post('/licenses/activate', [LicenseActivationController::class, 'activate']);
+Route::post('/licenses/deactivate', [LicenseActivationController::class, 'deactivate']);
 
-Route::get('/licenses/{key}', [LicenseStatusController::class, 'show'])
-    ->name('licenses.status');
+Route::get('/licenses/{key}', [LicenseStatusController::class, 'show']);

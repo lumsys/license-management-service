@@ -16,32 +16,24 @@ class BrandSeeder extends Seeder
 {
     public function run(): void
     {
-        $brand = Brand::create([
-            'name' => 'Acme Corp',
-            'slug' => 'acme',
-        ]);
+        $brand = Brand::firstOrCreate(
+            ['slug' => 'acme'],
+            ['name' => 'Acme Corp']
+    );
 
-        ApiKey::create([
-        'brand_id' => $brand->id,
-        'key' => 'test-api-key',
-        'role' => 'internal',
-        'is_active' => true,
-    ]);
-
-
-        $product = Product::create([
+        $product = Product::firstOrCreate([
             'brand_id' => $brand->id,
             'name' => 'Acme Plugin',
             'code' => 'ACME_PLUGIN',
         ]);
 
-        $licenseKey = LicenseKey::create([
+        $licenseKey = LicenseKey::firstOrCreate([
             'brand_id' => $brand->id,
             'key' => 'TEST-LICENSE-KEY',
             'customer_email' => 'customer@test.com',
         ]);
 
-        License::create([
+        License::firstOrCreate([
             'license_key_id' => $licenseKey->id,
             'product_id' => $product->id,
             'status' => 'valid',

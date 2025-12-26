@@ -26,6 +26,7 @@ class AuthenticateBrand
             abort(401, 'Invalid API key');
         }
 
+        $request->attributes->set('apiKey', $apiKey);
         $request->attributes->set('brand_id', $key->brand_id);
         $request->attributes->set('role', $key->role); 
 

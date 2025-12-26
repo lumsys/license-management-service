@@ -13,11 +13,11 @@ class LicenseKeyResource extends JsonResource
             'license_key' => $this->key,
             'customer_email' => $this->customer_email,
             'brand' => [
-                'id' => $this->brand->id,
-                'name' => $this->brand->name,
-                'slug' => $this->brand->slug,
+                'id' => $this->brand?->id,
+                'name' => $this->brand?->name,
+                'slug' => $this->brand?->slug,
             ],
-            'licenses' => LicenseResource::collection($this->whenLoaded('licenses')),
+            'licenses' => LicenseResource::collection($this->licenses ?? collect()),
             'created_at' => $this->created_at?->toISOString(),
         ];
     }
