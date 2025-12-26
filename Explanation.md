@@ -163,6 +163,60 @@ End-user products (WordPress plugins, apps, CLI tools):
 
 ---
 
+2. User Stories
+US1 – Brand can provision a license
+Endpoint: POST /brands/{brand}/licenses
+Creates a license key and associates licenses to products.
+Each license has a status (valid, suspended, cancelled) and expiration date.
+Supports adding additional licenses to an existing key.
+Brand can provision a license
+US2 – Brand can change license lifecycle
+Endpoints:
+
+PATCH /licenses/{license}/status – Change license status (suspend/resume/cancel)
+PATCH /licenses/{license}/renew – Extend license expiration
+Allows brands to manage license lifecycle.
+
+Brand can change license lifecycle Brand can renew
+US3 – End-user product can activate a license
+Endpoint: POST /licenses/activate
+
+Activates a license for a specific instance (instance_id)
+
+Seat limits are enforced per license.
+
+End-user product can activate a license-
+US4 – User can check license status
+Endpoint: GET /licenses/{key}
+Returns:
+License key
+Validity
+Entitlements (per product)
+Remaining seats
+Status and expiration
+Can check license status
+US5 – End-user product can deactivate a seat
+Endpoint: POST /licenses/deactivate
+Deactivates a specific license activation freeing a seat.
+User can deactivate license
+US6 – Brands can list licenses by customer email
+Endpoint: GET /brands/licenses?email={email}
+
+Returns all licenses for a given email across the brand.
+
+Only accessible by brand API keys.
+
+Brands can list licenses by customer email-
+3. API Endpoints
+Method	Endpoint	Description	Authentication
+POST	/brands/{brand}/licenses	Provision license key & licenses	API-Key
+PATCH	/licenses/{license}/status	Update license status	API-Key
+PATCH	/licenses/{license}/renew	Renew license	API-Key
+GET	/brands/licenses	List licenses by email	API-Key
+POST	/licenses/activate	Activate a license for an instance	API-Key
+POST	/licenses/deactivate	Deactivate a license instance	API-Key
+GET	/licenses/{key}	Check license status	API-Key
+
 ## 6. How to Run Locally
 
 ### Requirements
