@@ -15,21 +15,21 @@ class LicenseActivationService
 
     
     public function activate(
-    string $licenseKeyValue,
-    string $productCode,
-    string $instanceId
-): Activation {
-    $licenseKey = LicenseKey::with('licenses.product', 'licenses.activations')
-        ->where('key', $licenseKeyValue)
-        ->firstOrFail();
+        string $licenseKeyValue,
+        string $productCode,
+        string $instanceId
+    ): Activation {
+        $licenseKey = LicenseKey::with('licenses.product', 'licenses.activations')
+            ->where('key', $licenseKeyValue)
+            ->firstOrFail();
 
-    $license = $licenseKey->licenses
-        ->first(fn ($license) =>
-            $license->product->code === $productCode &&
-            $license->isValid()
-        );
+        $license = $licenseKey->licenses
+            ->first(fn ($license) =>
+                $license->product->code === $productCode &&
+                $license->isValid()
+            );
 
-    if (!$license) {
+        if (!$license) {
             throw new LicenseNotValidException();
         }
 
@@ -37,53 +37,66 @@ class LicenseActivationService
             throw new NoAvailableSeatsException();
         }
 
-    $activation = Activation::firstOrCreate(
-        [
+        // Handle soft-deleted activations
+        $activation = Activation::withTrashed()->firstOrNew([
             'license_id' => $license->id,
             'instance_id' => $instanceId,
-        ],
-        [
-            'activated_at' => now(),
-        ]
-    );
-
-    
-    if ($activation->wasRecentlyCreated) {
-        Log::channel('licenses')->info('License activated', [
-            'license_key' => $licenseKeyValue,
-            'license_id' => $license->id,
-            'product_code' => $productCode,
-            'instance_id' => $instanceId,
-            'remaining_seats' => $license->remainingSeats(),
         ]);
+
+        if ($activation->exists && $activation->trashed()) {
+            // Reactivate a previously soft-deleted activation
+            $activation->restore();
+        }
+
+        $activation->activated_at = now();
+        $activation->save();
+
+        // Log only if newly created or restored
+        if ($activation->wasRecentlyCreated || $activation->wasChanged()) {
+            Log::channel('licenses')->info('License activated', [
+                'license_key'   => $licenseKeyValue,
+                'license_id'    => $license->id,
+                'product_code'  => $productCode,
+                'instance_id'   => $instanceId,
+                'remaining_seats' => $license->remainingSeats(),
+            ]);
+        }
+
+        return $activation;
     }
 
-    return $activation;
-}
+    public function deactivate(string $licenseKeyValue, string $instanceId): object
+    {
+        $licenseKey = LicenseKey::with('licenses.activations')
+            ->where('key', $licenseKeyValue)
+            ->firstOrFail();
 
-    public function deactivate(string $licenseKeyValue, string $instanceId): ?Activation
-{
-    $licenseKey = LicenseKey::with('licenses.activations')
-        ->where('key', $licenseKeyValue)
-        ->firstOrFail();
+        $activation = $licenseKey->licenses
+            ->flatMap(fn ($license) => $license->activations)
+            ->firstWhere('instance_id', $instanceId);
 
-    $activation = $licenseKey->licenses
-        ->flatMap(fn ($license) => $license->activations)
-        ->firstWhere('instance_id', $instanceId);
+        if (!$activation) {
+            abort(404, 'Activation not found');
+        }
 
-    if (!$activation) {
-        abort(404, 'Activation not found');
+        $activationId = $activation->id;
+        $instanceId = $activation->instance_id;
+        $activatedAt = $activation->activated_at;
+
+        // Soft-delete activation
+        $activation->delete();
+
+        Log::channel('licenses')->info('License deactivated', [
+            'license_key' => $licenseKeyValue,
+            'license_id'  => $activationId,
+            'instance_id' => $instanceId,
+        ]);
+
+        return (object)[
+            'instance_id'  => $instanceId,
+            'activated_at' => $activatedAt,
+            'status'       => 'deactivated',
+        ];
     }
-
-    $activation->delete();
-
-    Log::channel('licenses')->info('License deactivated', [
-        'license_key' => $licenseKeyValue,
-        'license_id' => $activation->license_id,
-        'instance_id' => $instanceId,
-    ]);
-
-     return $activation;
-}
 
 }

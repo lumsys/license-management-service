@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('license_id')->constrained()->onDelete('cascade');
             $table->string('instance_id')->unique();
             $table->timestamp('activated_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }
