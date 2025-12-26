@@ -49,11 +49,21 @@ class LicenseActivationController extends Controller
         );
 
         return response()->json(new ActivationResource($activation));
+    } catch (\App\Exceptions\NoAvailableSeatsException $e) {
+        return response()->json([
+            'message' => $e->getMessage() ?: 'No available seats'
+        ], 403);
+    } catch (\App\Exceptions\LicenseNotValidException $e) {
+        return response()->json([
+            'message' => $e->getMessage() ?: 'License not valid'
+        ], 403); 
     } catch (\Throwable $e) {
-    return response()->json(new ErrorResource($e), 400);
+    
+        return response()->json(new ErrorResource($e), 400);
+    }
 }
 
-}
+
 
 
 /**

@@ -260,6 +260,78 @@ curl http://localhost:8000/api/licenses/UUID
 * Extend lifecycle management (suspend/resume) and event-driven architecture.
 
 
+Absolutely! You can add a **Tests** section to your `Explanation.md` so that anyone running your project knows how to execute the test suite. Here’s an updated section for your documentation:
+
+---
+
+## 8. Running Tests
+
+This project includes **unit and feature tests** to verify core functionality, including:
+
+* License activation and deactivation
+* Seat enforcement
+* License provisioning
+* License status checks
+* Edge cases, e.g., soft-deleted activations
+
+### Running the Test Suite
+
+1. Ensure your environment is set up and the database is migrated:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+2. Run all tests using Laravel’s Artisan command:
+
+```bash
+php artisan test
+```
+
+* You should see output like:
+
+
+sunda@Lumsys MINGW64 ~/Documents/License-App/centralized_License_Service (master)
+$ php artisan test
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                                                                                                 0.01s
+
+   PASS  Tests\Unit\LicenseActivationServiceTest
+  ✓ seat limit enforced                                                                                                                               1.43s
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                                                                                                     0.06s
+
+   PASS  Tests\Feature\LicenseActivationTest
+  ✓ license can be activated                                                                                                                          1.14s
+  ✓ activation fails when seats exceeded                                                                                                              1.09s
+
+   PASS  Tests\Feature\LicenseProvisionTest
+  ✓ brand can provision license                                                                                                                       1.14s
+
+   PASS  Tests\Feature\LicenseStatusTest
+  ✓ license status endpoint                                                                                                                           1.17s
+
+  Tests:    7 passed (32 assertions)
+  Duration: 6.28s
+
+
+
+### Notes
+
+* Tests are written using **PHPUnit** and **Laravel testing conventions**.
+* **Soft-deleted activations** are included in tests to ensure duplicate key errors do not occur.
+* Ensure `.env.testing` or your test database is configured to avoid affecting production or local data.
+
+---
+
+I can also **integrate this Tests section directly into the previous full `Explanation.md`** so the documentation is complete and ready to submit, including endpoints, setup, and tests.
+
+Do you want me to do that?
+
+
+
 
 ## Final Note
 
