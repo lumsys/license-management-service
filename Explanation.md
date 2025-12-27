@@ -29,12 +29,12 @@ End-user products (WordPress plugins, apps, CLI tools):
 ### High-Level Architecture
 
 
-+-------------------+       +------------------+       +----------------+
-| Brand Systems     | ----> | License Service  | <---- | End-User Apps  |
-| (Admin/API)       |       | (Laravel 10 API) |       | Plugins/CLI   |
-+-------------------+       +--------+---------+       +----------------+
-                                      |
-                                   MySQL (multi-tenant)
+
+ Brand Systems     ---->  License Service   <----  End-User Apps 
+                            (API)                     Plugins/CLI   
+     
+                                 |
+                            MySQL (multi-tenant)
 
 
 * **Laravel 10 (API-only)** backend
@@ -79,7 +79,7 @@ End-user products (WordPress plugins, apps, CLI tools):
 * Each license has a `seat_limit`.
 * Each activation consumes one seat.
 * Deactivating an activation frees a seat.
-* **Soft deletes** are used for activations:
+* **Soft deletes** are used for activations and deactivation:
 
   * Attempting to reactivate restores the previous record.
   * Prevents duplicate entry errors while maintaining seat counts.
@@ -89,8 +89,16 @@ End-user products (WordPress plugins, apps, CLI tools):
 ### Security Model
 
 * Brand APIs secured using **API keys** via `API-KEY` header.
-* End-user APIs do not allow license provisioning or listing.
+* A single API-KEY mechanism is used to authenticate two roles:
+* brand – restricted to resources owned by the authenticated brand
+* internal – elevated access for internal/admin operations
+* API keys are validated via middleware which:
+* Verifies the key exists and is active
+* Resolves the associated role and (when applicable) brand context
+* Attaches the authenticated role and brand information to the request
+* Authorization rules are enforced at the route and controller level based on the resolved role and brand ownership.
 * OAuth2 (Laravel Passport) is designed as a **future upgrade** for finer-grained authorization.
+* Security Model
 
 
 
@@ -330,15 +338,13 @@ curl http://localhost:8000/api/licenses/UUID
 **Next Steps:**
 
 * Implement OAuth2 for brand APIs.
+* Add role-based middleware (role:brand, role:internal)
 * Add Redis caching and read replicas.
 * Add webhooks for brand synchronization.
 * Complete audit logging and rate limiting.
 * Extend lifecycle management (suspend/resume) and event-driven architecture.
 
 
-Absolutely! You can add a **Tests** section to your `Explanation.md` so that anyone running your project knows how to execute the test suite. Here’s an updated section for your documentation:
-
----
 
 ## 8. Running Tests
 
