@@ -260,18 +260,17 @@ User Stories
 * Optional: Postman or cURL for testing
 
 ### Setup
-
-```bash
+```
 git clone <repo-url>
 cd <repo>
 composer install
 cp .env.example .env
 php artisan key:generate
 ```
+##Set database credentials in `.env`:
 
-Set database credentials in `.env`:
-
-```env
+*env
+```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -280,25 +279,30 @@ DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
-Run migrations and seed sample data:
-
-```bash
+* Run migrations and seed sample data:
+```
 php artisan migrate:fresh --seed
 ```
 
-Start server:
-
-```bash
+* Start server:
+```
 php artisan serve
 ```
+* run scribe open api:
+```
+php artisan scribe:generate
+```
+```
+*serve using: http://127.0.0.1:8000/docs
 
+```
 ---
 
 ### Sample API Requests
 
 #### Provision License (Brand)
 
-```bash
+```
 curl -X POST http://localhost:8000/api/brands/1/licenses \
   -H "X-API-KEY: your-brand-key" \
   -H "Content-Type: application/json" \
@@ -312,7 +316,7 @@ curl -X POST http://localhost:8000/api/brands/1/licenses \
 
 #### Activate License
 
-```bash
+```
 curl -X POST http://localhost:8000/api/licenses/activate \
   -H "Content-Type: application/json" \
   -d '{
@@ -324,7 +328,7 @@ curl -X POST http://localhost:8000/api/licenses/activate \
 
 #### Check License Status
 
-```bash
+```
 curl http://localhost:8000/api/licenses/UUID
 ```
 
@@ -363,13 +367,13 @@ This project includes **unit and feature tests** to verify core functionality, i
 
 1. Ensure your environment is set up and the database is migrated:
 
-```bash
+```
 php artisan migrate:fresh --seed
 ```
 
 2. Run all tests using Laravel’s Artisan command:
 
-```bash
+```
 php artisan test
 ```
 
