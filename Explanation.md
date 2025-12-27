@@ -32,9 +32,9 @@ End-user products (WordPress plugins, apps, CLI tools):
 
  Brand Systems     ---->  License Service   <----  End-User Apps 
                             (API)                     Plugins/CLI   
-     
-                                 |
-                            MySQL (multi-tenant)
+                            |
+                        MySQL (multi-tenant)
+                            
 
 
 * **Laravel 10 (API-only)** backend
@@ -45,6 +45,9 @@ End-user products (WordPress plugins, apps, CLI tools):
   * Controllers → HTTP handling
   * Services → Business logic
   * Models → Domain entities
+  * Resources - Consistence Data Response Structure
+  * Request - Validate request input
+  * Exception - Cache and return appropriate error message and code
   * Feature and unit tests fully implemented and passing
 
 
